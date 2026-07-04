@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
+  ArrowRight,
   CheckCircle2,
   Circle,
   Lock,
@@ -346,6 +347,49 @@ function ModuleView({
           <Quiz module={module} onDone={onBack} />
         )}
       </div>
+
+      {/* Prev / next module — small corner buttons for sequential movement. */}
+      {(() => {
+        const idx = BD_MODULES.findIndex((m) => m.id === module.id)
+        const prev = idx > 0 ? BD_MODULES[idx - 1] : null
+        const next = idx < BD_MODULES.length - 1 ? BD_MODULES[idx + 1] : null
+        return (
+          <div className="mt-8 flex items-center justify-between gap-3 border-t border-[rgba(0,59,70,0.08)] pt-4">
+            {prev ? (
+              <button
+                type="button"
+                onClick={() => onOpenModule?.(prev.id)}
+                className="group inline-flex items-center gap-2 rounded-full border-[0.5px] border-[rgba(0,59,70,0.16)] pl-2.5 pr-3.5 py-1.5 text-[12px] text-ink-secondary hover:border-accent-copper hover:text-accent-copper transition-colors max-w-[46%]"
+                title={`Module ${prev.number}: ${bdEffectiveTitle(overrides, prev.id, prev.title)}`}
+              >
+                <ArrowLeft size={14} className="shrink-0" />
+                <span className="text-left leading-tight">
+                  <span className="block text-[10px] uppercase tracking-wide text-ink-tertiary group-hover:text-accent-copper">Previous</span>
+                  <span className="block truncate">Module {prev.number}</span>
+                </span>
+              </button>
+            ) : (
+              <span />
+            )}
+            {next ? (
+              <button
+                type="button"
+                onClick={() => onOpenModule?.(next.id)}
+                className="group inline-flex items-center gap-2 rounded-full border-[0.5px] border-[rgba(0,59,70,0.16)] pl-3.5 pr-2.5 py-1.5 text-[12px] text-ink-secondary hover:border-accent-copper hover:text-accent-copper transition-colors max-w-[46%]"
+                title={`Module ${next.number}: ${bdEffectiveTitle(overrides, next.id, next.title)}`}
+              >
+                <span className="text-right leading-tight">
+                  <span className="block text-[10px] uppercase tracking-wide text-ink-tertiary group-hover:text-accent-copper">Next</span>
+                  <span className="block truncate">Module {next.number}</span>
+                </span>
+                <ArrowRight size={14} className="shrink-0" />
+              </button>
+            ) : (
+              <span />
+            )}
+          </div>
+        )
+      })()}
     </div>
   )
 }
